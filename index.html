@@ -1,230 +1,315 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Eco-Cupones para Escritorio</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f0f8f5;
-    }
-    header {
-      background-color: #4caf50;
-      color: white;
-      padding: 20px;
-      text-align: center;
-    }
-    nav {
-      background-color: #f1f1f1;
-      padding: 10px;
-      text-align: center;
-    }
-    nav a {
-      margin: 0 10px;
-      text-decoration: none;
-      color: #333;
-      font-weight: bold;
-    }
-    nav a:hover {
-      text-decoration: underline;
-    }
-    .container {
-      margin: 20px auto;
-      max-width: 900px;
-      padding: 20px;
-      background: white;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
-    button {
-      background-color: #4caf50;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      margin: 5px;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
-    .points-display, .progress-bar-container, .trivia-container, .tips-container {
-      margin-top: 20px;
-      text-align: center;
-    }
-    .progress-bar {
-      height: 20px;
-      width: 80%;
-      background-color: #ccc;
-      margin: 20px auto;
-      border-radius: 10px;
-      overflow: hidden;
-      position: relative;
-    }
-    .progress-bar-inner {
-      height: 100%;
-      width: 0;
-      background-color: #4caf50;
-      border-radius: 10px;
-    }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    table th, table td {
-      border: 1px solid #ddd;
-      padding: 8px;
-      text-align: center;
-    }
-    table th {
-      background-color: #4caf50;
-      color: white;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Una pregunta importante...</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Lato', sans-serif; background: #fff0f5; min-height: 100vh; overflow-x: hidden; }
+
+  /* ══ PANTALLA 1: INICIO ══ */
+  #screen-home {
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    position: relative;
+    background: linear-gradient(135deg, #fff0f5 0%, #fce7f3 50%, #ffe4e6 100%);
+    overflow: hidden;
+  }
+  .hearts-bg { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+  .heart-float { position: absolute; opacity: .12; animation: floatUp linear infinite; }
+  @keyframes floatUp {
+    0%   { transform: translateY(110vh) rotate(0deg);   opacity: .12; }
+    100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+  }
+  .home-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 5vw, 3.2rem);
+    color: #1f0a14; text-align: center;
+    margin-bottom: .5rem; position: relative; z-index: 1;
+  }
+  .home-subtitle {
+    font-family: 'Playfair Display', serif; font-style: italic;
+    font-size: clamp(1rem, 2.5vw, 1.3rem); color: #6b2150;
+    text-align: center; margin-bottom: 3.5rem; position: relative; z-index: 1;
+  }
+  .btn-si-home {
+    background: linear-gradient(135deg, #f472b6, #db2777);
+    color: white; border: none; padding: 1.1rem 3.2rem;
+    font-family: 'Playfair Display', serif; font-size: 1.35rem;
+    border-radius: 50px; cursor: pointer;
+    box-shadow: 0 8px 30px rgba(244,114,182,.45);
+    transition: transform .2s, box-shadow .2s;
+    position: relative; z-index: 1;
+  }
+  .btn-si-home:hover { transform: translateY(-3px) scale(1.05); box-shadow: 0 12px 40px rgba(244,114,182,.55); }
+  .btn-si-home:active { transform: scale(.97); }
+
+  /* ── Botón NO fixed ── */
+  #btnNo {
+    background: white; color: #db2777;
+    border: 2.5px solid #f472b6; padding: 1.1rem 3.2rem;
+    font-family: 'Playfair Display', serif; font-size: 1.35rem;
+    border-radius: 50px; cursor: pointer;
+    position: fixed; z-index: 9999;
+    box-shadow: 0 4px 20px rgba(244,114,182,.2);
+    user-select: none;
+  }
+  #noMsg {
+    position: fixed; background: white;
+    border: 1.5px solid #fce7f3; color: #6b2150;
+    padding: .7rem 1.3rem; border-radius: 16px; font-size: .92rem;
+    box-shadow: 0 4px 20px rgba(244,114,182,.18);
+    z-index: 10000; opacity: 0; pointer-events: none;
+    max-width: 270px; text-align: center; transition: opacity .3s;
+  }
+  #noMsg.show { opacity: 1; }
+
+  /* ══ PANTALLA 2: VIDEO ══ */
+  #screen-video {
+    display: none; min-height: 100vh; background: #0d0005;
+    flex-direction: column; align-items: center; justify-content: center;
+    padding: 2rem 1rem 3rem;
+  }
+  #screen-video.active { display: flex; }
+  .video-wrap {
+    width: 100%; max-width: 800px; aspect-ratio: 16/9;
+    background: #1a0010; border-radius: 18px; overflow: hidden;
+    border: 2px solid rgba(244,114,182,.3);
+    box-shadow: 0 0 60px rgba(244,114,182,.2); position: relative;
+  }
+  .video-wrap video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .vid-placeholder {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 1rem; color: rgba(244,114,182,.6);
+    font-family: 'Playfair Display', serif; font-style: italic; text-align: center; padding: 1rem;
+  }
+
+  /* Botón rechazo — aparece a los 40 seg */
+  #btnRechazo {
+    margin-top: 2rem;
+    background: rgba(244,114,182,.12); color: #f9a8d4;
+    border: 1.5px solid #f472b6; padding: .95rem 2.8rem;
+    font-family: 'Playfair Display', serif; font-size: 1.12rem;
+    border-radius: 50px; cursor: pointer;
+    opacity: 0; pointer-events: none;
+    transition: opacity .7s, transform .2s;
+    box-shadow: 0 0 30px rgba(244,114,182,.18);
+    animation: pulsePink 2.2s ease-in-out infinite;
+  }
+  #btnRechazo.visible { opacity: 1; pointer-events: all; }
+  #btnRechazo:hover { transform: scale(1.04); }
+  @keyframes pulsePink {
+    0%,100% { box-shadow: 0 0 20px rgba(244,114,182,.2); }
+    50%      { box-shadow: 0 0 45px rgba(244,114,182,.5); }
+  }
+
+  /* Botón WhatsApp */
+  #btnWsp {
+    margin-top: 2rem;
+    background: #25D366; color: white;
+    border: none; padding: .95rem 2.8rem;
+    font-family: 'Lato', sans-serif; font-weight: 700; font-size: 1.05rem;
+    border-radius: 50px; cursor: pointer;
+    opacity: 0; pointer-events: none; display: none;
+    transition: opacity .6s, transform .2s;
+    box-shadow: 0 8px 30px rgba(37,211,102,.35);
+  }
+  #btnWsp.visible { opacity: 1; pointer-events: all; display: block; }
+  #btnWsp:hover { transform: scale(1.04); }
+
+  /* ══ PANTALLA 3: RECHAZO ══ */
+  #screen-rechazo {
+    display: none; min-height: 100vh;
+    background: linear-gradient(160deg, #0d0005 0%, #1f0014 100%);
+    flex-direction: column; align-items: center; justify-content: center;
+    padding: 3rem 1.5rem; text-align: center; gap: 0;
+  }
+  #screen-rechazo.active { display: flex; }
+  #rechazoImg {
+    max-width: min(88vw, 420px); border-radius: 18px;
+    border: 3px solid rgba(244,114,182,.4);
+    box-shadow: 0 0 70px rgba(244,114,182,.3);
+    animation: fadeScale .8s ease forwards; display: block;
+  }
+  .rechazo-placeholder {
+    width: min(88vw, 420px); height: 280px; border-radius: 18px;
+    border: 3px dashed rgba(244,114,182,.3);
+    display: none; flex-direction: column; align-items: center; justify-content: center;
+    color: rgba(244,114,182,.5); font-family: 'Playfair Display', serif;
+    font-style: italic; font-size: 1rem; gap: 1rem;
+  }
+  .rechazo-text {
+    margin-top: 2.2rem; color: rgba(249,168,212,.8);
+    font-family: 'Playfair Display', serif; font-style: italic;
+    font-size: clamp(.95rem, 2.5vw, 1.18rem); line-height: 1.85;
+    max-width: 540px; animation: fadeScale 1s .4s ease both;
+  }
+  @keyframes fadeScale {
+    from { opacity: 0; transform: scale(.9); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+</style>
 </head>
 <body>
-  <header>
-    <h1>Eco-Cupones: Recicla y Gana</h1>
-  </header>
-  <nav>
-    <a href="#register" onclick="showSection('register')">Registro</a>
-    <a href="#rewards" onclick="showSection('rewards')">Premios</a>
-    <a href="#trivia" onclick="showSection('trivia')">Trivia</a>
-    <a href="#tips" onclick="showSection('tips')">Consejos</a>
-    <a href="#reports" onclick="showSection('reports')">Reportes</a>
-  </nav>
-  
-  <!-- Registro -->
-  <div id="register" class="container">
-    <h2>Registrar Material Reciclado</h2>
-    <label for="material">Selecciona el material reciclado:</label><br>
-    <select id="material">
-      <option value="5">Plástico (5 puntos)</option>
-      <option value="10">Vidrio (10 puntos)</option>
-      <option value="15">Papel/Cartón (15 puntos)</option>
-      <option value="20">Aluminio (20 puntos)</option>
-    </select>
-    <br><br>
-    <button onclick="addPoints()">Agregar Puntos</button>
-    <div class="points-display">
-      Puntos Acumulados: <span id="points">0</span>
-    </div>
-    <div class="progress-bar-container">
-      <h3>Progreso hacia tu próximo premio</h3>
-      <div class="progress-bar">
-        <div class="progress-bar-inner" id="progress-bar-inner"></div>
-      </div>
+
+<!-- ══ PANTALLA 1 ══ -->
+<div id="screen-home">
+  <div class="hearts-bg" id="heartsBg"></div>
+  <h1 class="home-title">Una pregunta importante...</h1>
+  <p class="home-subtitle">piénsalo bien antes de responder ✨</p>
+  <button class="btn-si-home" onclick="goToVideo()">Sí 💖</button>
+</div>
+
+<button id="btnNo">No 🙅</button>
+<div id="noMsg"></div>
+
+<!-- ══ PANTALLA 2: VIDEO ══ -->
+<div id="screen-video">
+  <div class="video-wrap">
+    <!-- 🔧 Pon tu video.mp4 en la misma carpeta que este HTML -->
+    <video id="mainVideo" controls playsinline>
+      <source src="video.mp4" type="video/mp4">
+    </video>
+    <div class="vid-placeholder" id="vidPH">
+      <span style="font-size:3rem;opacity:.4">🎬</span>
+      <span>Coloca tu <strong>video.mp4</strong> en la misma carpeta que este archivo</span>
     </div>
   </div>
 
-  <!-- Premios -->
-  <div id="rewards" class="container hidden">
-    <h2>Catálogo de Premios</h2>
-    <ul>
-      <li>🌱 Semillas de Plantas - <strong>50 puntos</strong></li>
-      <li>🛍️ Bolsa Reutilizable - <strong>100 puntos</strong></li>
-      <li>🌳 Planta Pequeña - <strong>150 puntos</strong></li>
-    </ul>
+  <!-- Aparece a los 40 seg → lleva a pantalla rechazo -->
+  <button id="btnRechazo" onclick="goToRechazo()">
+    Tengo algo que decirte... 💌
+  </button>
+
+  <!-- Aparece solo si el video termina sin que presionen nada -->
+  <button id="btnWsp" onclick="sendWsp()">
+    💬 Acepta ser mi enamorada
+  </button>
+</div>
+
+<!-- ══ PANTALLA 3: RECHAZO ══ -->
+<div id="screen-rechazo">
+  <!-- 🔧 Pon tu foto.jpg en la misma carpeta que este HTML -->
+  <img src="/334012617052211.png" id="rechazoImg" alt="foto"
+    onerror="this.style.display='none'; document.getElementById('rechazoPH').style.display='flex'">
+  <div class="rechazo-placeholder" id="rechazoPH">
+    <span style="font-size:3rem">🖼️</span>
   </div>
+  <p class="rechazo-text">
+    Al menos lo intenté, pero soy sincero...<br>
+    ser amigos después de un rechazo, nah no gracias.<br>
+    Quizás cuando se me pase (1 año xd) 😅
+  </p>
+</div>
 
-  <!-- Trivia -->
-  <div id="trivia" class="container hidden">
-    <h2>Trivia Ambiental</h2>
-    <button onclick="showTrivia()">Responder Pregunta</button>
-    <div id="trivia-question" style="margin-top: 20px;"></div>
-  </div>
+<script>
+// ── Corazones flotantes ──
+const hBg = document.getElementById('heartsBg');
+for (let i = 0; i < 20; i++) {
+  const el = document.createElement('span');
+  el.className = 'heart-float';
+  el.textContent = ['❤️','💗','💖','💕','💓'][i % 5];
+  el.style.cssText = `left:${Math.random()*100}vw;font-size:${1+Math.random()*1.4}rem;animation-duration:${9+Math.random()*11}s;animation-delay:${Math.random()*10}s`;
+  hBg.appendChild(el);
+}
 
-  <!-- Consejos -->
-  <div id="tips" class="container hidden">
-    <h2>Consejo del Día</h2>
-    <div id="daily-tip">Presiona el botón para recibir un consejo.</div>
-    <button onclick="showTip()">Ver Consejo</button>
-  </div>
+// ── Botón NO ──
+const btnNo = document.getElementById('btnNo');
+const noMsg = document.getElementById('noMsg');
+let noCount = 0;
+const msgs = [
+  "¿Otra vez con el no? ya párale ¿no crees? 😤",
+  "jaja escoge bien 😏",
+  "nah yo sé que era un sí 😎",
+  "oye ya pues en serio 🙄",
+  "ves como eres, siempre dices que no 😒",
+  "por eso los de 24 son enojones 😤",
+  "a veces pienso que en verdad quieres decir que no 🤔",
+  "presiona 99 veces que no y entenderé 💀",
+  "nah nah nah 🙅‍♀️"
+];
 
-  <!-- Reportes -->
-  <div id="reports" class="container hidden">
-    <h2>Reporte de Participación</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Mes</th>
-          <th>Personas con 100 Puntos</th>
-        </tr>
-      </thead>
-      <tbody id="report-data">
-        <!-- Datos dinámicos -->
-      </tbody>
-    </table>
-  </div>
+btnNo.style.left = (window.innerWidth / 2 + 90) + 'px';
+btnNo.style.top  = (window.innerHeight / 2 + 30) + 'px';
 
-  <script>
-    let points = parseInt(localStorage.getItem('points')) || 0;
-    const reportData = {
-      "Noviembre 2024": 40,
-      "Octubre 2024": 35,
-      "Septiembre 2024": 50
-    };
+function moveNo() {
+  const maxX = window.innerWidth  - btnNo.offsetWidth  - 16;
+  const maxY = window.innerHeight - btnNo.offsetHeight - 16;
+  btnNo.style.left = Math.max(8, Math.floor(Math.random() * maxX)) + 'px';
+  btnNo.style.top  = Math.max(8, Math.floor(Math.random() * maxY)) + 'px';
+}
+btnNo.addEventListener('mouseenter', moveNo);
+btnNo.addEventListener('click', () => {
+  moveNo();
+  noMsg.textContent = msgs[noCount % msgs.length];
+  noCount++;
+  const r = btnNo.getBoundingClientRect();
+  let mx = r.left + r.width / 2 - 135;
+  let my = r.top - 72;
+  if (my < 10) my = r.bottom + 10;
+  mx = Math.max(5, Math.min(mx, window.innerWidth - 275));
+  noMsg.style.left = mx + 'px';
+  noMsg.style.top  = my + 'px';
+  noMsg.classList.add('show');
+  clearTimeout(noMsg._t);
+  noMsg._t = setTimeout(() => noMsg.classList.remove('show'), 2800);
+});
 
-    const triviaQuestions = [
-      { question: "¿Cuánto tarda el plástico en descomponerse?", answer: "100 años" },
-      { question: "¿Qué significa reducir, reutilizar y reciclar?", answer: "Tres acciones para cuidar el planeta" },
-      { question: "¿Qué color de contenedor se usa para reciclar vidrio?", answer: "Verde" }
-    ];
+// ── Ir a video ──
+let rechazoUsed = false;
+let timer40 = null;
 
-    const tips = [
-      "Usa botellas reutilizables en lugar de plásticas.",
-      "Planta un árbol en tu comunidad.",
-      "Asegúrate de limpiar los envases antes de reciclarlos."
-    ];
+function goToVideo() {
+  document.getElementById('screen-home').style.display = 'none';
+  btnNo.style.display = 'none';
+  noMsg.style.display = 'none';
 
-    document.getElementById('points').textContent = points;
-    loadReports();
+  const sv = document.getElementById('screen-video');
+  sv.classList.add('active');
 
-    function addPoints() {
-      const material = document.getElementById('material');
-      const selectedPoints = parseInt(material.value);
-      points += selectedPoints;
-      localStorage.setItem('points', points);
-      document.getElementById('points').textContent = points;
-      updateProgressBar();
-      alert(`¡Has agregado ${selectedPoints} puntos! Tu total ahora es de ${points} puntos.`);
-    }
+  const video      = document.getElementById('mainVideo');
+  const btnRechazo = document.getElementById('btnRechazo');
+  const btnWsp     = document.getElementById('btnWsp');
 
-    function updateProgressBar() {
-      const progress = Math.min((points / 150) * 100, 100);
-      document.getElementById('progress-bar-inner').style.width = `${progress}%`;
-    }
+  video.addEventListener('canplay', () => {
+    document.getElementById('vidPH').style.display = 'none';
+  }, { once: true });
 
-    function showTrivia() {
-      const randomTrivia = triviaQuestions[Math.floor(Math.random() * triviaQuestions.length)];
-      const triviaContainer = document.getElementById('trivia-question');
-      triviaContainer.textContent = `Pregunta: ${randomTrivia.question} (Respuesta: ${randomTrivia.answer})`;
-    }
+  // Botón rechazo aparece a los 40 segundos
+  timer40 = setTimeout(() => {
+    btnRechazo.classList.add('visible');
+  }, 40000);
 
-    function showTip() {
-      const randomTip = tips[Math.floor(Math.random() * tips.length)];
-      document.getElementById('daily-tip').textContent = randomTip;
-    }
+  // Cuando el video termina
+  video.addEventListener('ended', () => {
+    if (rechazoUsed) return;
+    // Eliminar botón rechazo
+    clearTimeout(timer40);
+    btnRechazo.classList.remove('visible');
+    btnRechazo.style.display = 'none';
+    // Mostrar botón WhatsApp
+    btnWsp.classList.add('visible');
+  });
+}
 
-    function loadReports() {
-      const reportContainer = document.getElementById('report-data');
-      reportContainer.innerHTML = '';
-      for (const [month, count] of Object.entries(reportData)) {
-        const row = document.createElement('tr');
-        row.innerHTML = `<td>${month}</td><td>${count}</td>`;
-        reportContainer.appendChild(row);
-      }
-    }
+// ── Ir a pantalla rechazo ──
+function goToRechazo() {
+  rechazoUsed = true;
+  clearTimeout(timer40);
+  document.getElementById('mainVideo').pause();
+  document.getElementById('screen-video').classList.remove('active');
+  document.getElementById('screen-video').style.display = 'none';
+  document.getElementById('screen-rechazo').classList.add('active');
+}
 
-    function showSection(sectionId) {
-      const sections = document.querySelectorAll('.container');
-      sections.forEach(section => section.classList.add('hidden'));
-      document.getElementById(sectionId).classList.remove('hidden');
-    }
-  </script>
+// ── WhatsApp ──
+function sendWsp() {
+  const msg = encodeURIComponent('acepto ser tu enamorada 💖');
+  window.open('https://wa.me/51918202990?text=' + msg, '_blank');
+}
+</script>
 </body>
 </html>
